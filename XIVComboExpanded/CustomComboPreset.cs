@@ -8,6 +8,9 @@ namespace XIVComboExpandedPlugin
     /// </summary>
     public enum CustomComboPreset
     {
+        // ====================================================================================
+        #region Misc
+
         [CustomComboInfo("Any", "This should not be displayed. This always returns true when used with IsEnabled.", ADV.JobID)]
         AdvAny = 0,
 
@@ -77,6 +80,7 @@ namespace XIVComboExpandedPlugin
         [CustomComboInfo("Disabled", "This should not be used.", ADV.JobID)]
         Disabled = 99999,
 
+        #endregion
         // ====================================================================================
         #region ADV
         #endregion
@@ -362,8 +366,13 @@ namespace XIVComboExpandedPlugin
         [CustomComboInfo("Aeolian Edge / Raiju Feature", "Replaces the Aeolian Edge combo with Fleeting Raiju when available.", NIN.JobID)]
         NinjaAeolianEdgeRaijuFeature = 3013,
 
-        [CustomComboInfo("Huraijin / Raiju Feature", "Replaces Huraijin with Forked Raiju when available.", NIN.JobID)]
-        NinjaHuraijinRaijuFeature = 3011,
+        [ConflictingCombos(NinjaHuraijinFleetingRaijuFeature)]
+        [CustomComboInfo("Huraijin / Forked Raiju Feature", "Replaces Huraijin with Forked Raiju when available.", NIN.JobID)]
+        NinjaHuraijinForkedRaijuFeature = 3011,
+
+        [ConflictingCombos(NinjaHuraijinForkedRaijuFeature)]
+        [CustomComboInfo("Huraijin / Fleeting Raiju Option", "Replaces Huraijin with Fleeting Raiju when available.", NIN.JobID)]
+        NinjaHuraijinFleetingRaijuFeature = 3014,
 
         #endregion
         // ====================================================================================
@@ -707,15 +716,15 @@ namespace XIVComboExpandedPlugin
         // ====================================================================================
         #region DOH
 
-        // [CustomComboInfo("Touch Combo", "Replaces Basic Touch with its combo chain.", DOH.JobID)]
-        // DohTouchCombo = 50001,
+        // [CustomComboInfo("Placeholder", "Placeholder.", DOH.JobID)]
+        // DohPlaceholder = 50001,
 
         #endregion
         // ====================================================================================
         #region DOL
 
-        // [CustomComboInfo("Eureka Feature", "Replaces Ageless Words and Solid Reason with Wise to the World when available.", DOL.JobID)]
-        // DolEurekaFeature = 51001,
+        [CustomComboInfo("Eureka Feature", "Replaces Ageless Words and Solid Reason with Wise to the World when available.", DOL.JobID)]
+        DolEurekaFeature = 51001,
 
         #endregion
         // ====================================================================================
