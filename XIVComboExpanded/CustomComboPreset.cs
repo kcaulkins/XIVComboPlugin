@@ -696,6 +696,9 @@ namespace XIVComboExpandedPlugin
         [CustomComboInfo("Primal Release Feature", "Replace Inner Release with Primal Rend when available", WAR.JobID)]
         WarriorPrimalReleaseFeature = 2108,
 
+        [CustomComboInfo("Custom Spend Fury Feature", "Spends fury when > 80", WAR.JobID)]
+        WarSpendFuryFeature = 2104,
+
         #endregion
         // ====================================================================================
         #region WHITE MAGE

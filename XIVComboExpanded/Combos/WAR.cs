@@ -32,6 +32,7 @@ namespace XIVComboExpandedPlugin.Combos
             public const ushort
                 InnerRelease = 1177,
                 NascentChaos = 1897,
+                SurgingTempest = 2677,
                 PrimalRendReady = 2624;
         }
 
@@ -66,10 +67,19 @@ namespace XIVComboExpandedPlugin.Combos
         {
             if (actionID == WAR.StormsPath)
             {
+                var gauge = GetJobGauge<WARGauge>();
+                if (gauge.BeastGauge > 80)
+                    return WAR.FellCleave;
+
                 if (comboTime > 0)
                 {
                     if (lastComboMove == WAR.Maim && level >= WAR.Levels.StormsPath)
+                    {
+                        if (!HasEffect(WAR.Buffs.SurgingTempest) || (HasEffect(WAR.Buffs.SurgingTempest) && EffectDuration(WAR.Buffs.SurgingTempest) < 10))
+                            return WAR.StormsEye;
+
                         return WAR.StormsPath;
+                    }
 
                     if (lastComboMove == WAR.HeavySwing && level >= WAR.Levels.Maim)
                         return WAR.Maim;
@@ -90,6 +100,11 @@ namespace XIVComboExpandedPlugin.Combos
         {
             if (actionID == WAR.StormsEye)
             {
+                var gauge = GetJobGauge<WARGauge>();
+
+                if (gauge.BeastGauge > 90)
+                    return WAR.FellCleave;
+
                 if (comboTime > 0)
                 {
                     if (lastComboMove == WAR.Maim && level >= WAR.Levels.StormsEye)
@@ -114,6 +129,10 @@ namespace XIVComboExpandedPlugin.Combos
         {
             if (actionID == WAR.MythrilTempest)
             {
+                var gauge = GetJobGauge<WARGauge>();
+
+                if (gauge.BeastGauge > 60)
+                    return WAR.Decimate;
                 if (comboTime > 0)
                 {
                     if (lastComboMove == WAR.Overpower && level >= WAR.Levels.MythrilTempest)
@@ -183,6 +202,24 @@ namespace XIVComboExpandedPlugin.Combos
             {
                 if (level >= WAR.Levels.PrimalRend && HasEffect(WAR.Buffs.PrimalRendReady))
                     return WAR.PrimalRend;
+            }
+
+            return actionID;
+        }
+    }
+
+    internal class WarriorSpendFuryFeature : CustomCombo
+    {
+        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.WarSpendFuryFeature;
+
+        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        {
+            if (actionID == WAR.StormsPath || actionID == WAR.StormsEye)
+            {
+                var gauge = GetJobGauge<WARGauge>();
+
+                if (gauge.BeastGauge > 80)
+                    return WAR.FellCleave;
             }
 
             return actionID;

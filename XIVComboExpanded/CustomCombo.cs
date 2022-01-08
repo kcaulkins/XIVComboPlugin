@@ -228,6 +228,10 @@ namespace XIVComboExpandedPlugin.Combos
         protected static bool HasEffect(ushort effectID)
             => FindEffect(effectID) is not null;
 
+        
+        protected static int? EffectDuration(ushort effectID)
+            => GetEffectDuration(effectID);
+
         /// <summary>
         /// Finds an effect on the player.
         /// The effect must be owned by the player or unowned.
@@ -236,6 +240,9 @@ namespace XIVComboExpandedPlugin.Combos
         /// <returns>Status object or null.</returns>
         protected static Status? FindEffect(ushort effectID)
             => FindEffect(effectID, LocalPlayer, LocalPlayer?.ObjectId);
+
+        protected static int? GetEffectDuration(ushort effectID)
+            => GetStatusDuration(effectID, LocalPlayer, LocalPlayer?.ObjectId);
 
         /// <summary>
         /// Find if an effect on the target exists.
@@ -254,6 +261,9 @@ namespace XIVComboExpandedPlugin.Combos
         /// <returns>Status object or null.</returns>
         protected static Status? FindTargetEffect(ushort effectID)
             => FindEffect(effectID, CurrentTarget, LocalPlayer?.ObjectId);
+
+        protected static int? TargetEffectDuration(ushort effectID)
+            => GetStatusDuration(effectID, CurrentTarget, LocalPlayer?.ObjectId);
 
         /// <summary>
         /// Find if an effect on the player exists.
@@ -300,6 +310,16 @@ namespace XIVComboExpandedPlugin.Combos
         /// <returns>Status object or null.</returns>
         protected static Status? FindEffect(ushort effectID, GameObject? obj, uint? sourceID)
             => Service.ComboCache.GetStatus(effectID, obj, sourceID);
+
+        /// <summary>
+        /// Gets the duration of an active status.
+        /// </summary>
+        /// <param name="effectID">Status effect ID.</param>
+        /// <param name="obj">Object to look for effects on.</param>
+        /// <param name="sourceID">Source object ID.</param>
+        /// <returns>int.</returns>
+        protected static int? GetStatusDuration(ushort effectID, GameObject? obj, uint? sourceID)
+            => Service.ComboCache.GetStatusDuration(effectID, obj, sourceID);
 
         /// <summary>
         /// Gets the cooldown data for an action.

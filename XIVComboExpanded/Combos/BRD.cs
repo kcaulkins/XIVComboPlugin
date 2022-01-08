@@ -95,6 +95,62 @@ namespace XIVComboExpandedPlugin.Combos
         {
             if (actionID == BRD.HeavyShot || actionID == BRD.BurstShot)
             {
+
+
+
+
+
+
+                if (level < BRD.Levels.Windbite)
+                    return BRD.VenomousBite;
+
+                if (level < BRD.Levels.IronJaws)
+                {
+                    var venomous = FindTargetEffect(BRD.Debuffs.VenomousBite);
+                    var windbite = FindTargetEffect(BRD.Debuffs.Windbite);
+
+                    if (venomous is null)
+                        return BRD.VenomousBite;
+
+                    if (windbite is null)
+                        return BRD.Windbite;
+                }
+
+                if (level < BRD.Levels.BiteUpgrade)
+                {
+                    var venomous = TargetHasEffect(BRD.Debuffs.VenomousBite);
+                    var windbite = TargetHasEffect(BRD.Debuffs.Windbite);
+
+                    if ((venomous && windbite) && (TargetEffectDuration(BRD.Debuffs.Windbite) < 4 || TargetEffectDuration(BRD.Debuffs.VenomousBite) < 4))
+                        return BRD.IronJaws;
+
+                    if (windbite && !venomous)
+                        return BRD.VenomousBite;
+
+                    if (!windbite)
+                        return BRD.Windbite;
+                }
+
+                if (level >= BRD.Levels.BiteUpgrade)
+                {
+                    var caustic = TargetHasEffect(BRD.Debuffs.CausticBite);
+                    var stormbite = TargetHasEffect(BRD.Debuffs.Stormbite);
+
+                    if ((caustic && stormbite) && (TargetEffectDuration(BRD.Debuffs.CausticBite) < 4 || TargetEffectDuration(BRD.Debuffs.Stormbite) < 4))
+                        return BRD.IronJaws;
+
+                    if (stormbite && !caustic)
+                        return BRD.CausticBite;
+                    if (!stormbite)
+                        return BRD.Stormbite;
+                }
+
+
+
+
+
+
+
                 if (IsEnabled(CustomComboPreset.BardApexFeature))
                 {
                     var gauge = GetJobGauge<BRDGauge>();

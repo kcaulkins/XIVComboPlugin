@@ -82,6 +82,34 @@ namespace XIVComboExpandedPlugin
         }
 
         /// <summary>
+        /// Finds a status on the given object.
+        /// </summary>
+        /// <param name="statusID">Status effect ID.</param>
+        /// <param name="obj">Object to look for effects on.</param>
+        /// <param name="sourceID">Source object ID.</param>
+        /// <returns>Duration or null.</returns>
+        internal int GetStatusDuration(uint statusID, GameObject? obj, uint? sourceID)
+        {
+            // var key = (statusID, obj?.ObjectId, sourceID);
+            // if (this.statusCache.TryGetValue(key, out var found))
+               // return found;
+
+            if (obj is null)
+                return 99;
+
+            if (obj is not BattleChara chara)
+                return 99;
+
+            foreach (var status in chara.StatusList)
+            {
+                if (status.StatusId == statusID && (!sourceID.HasValue || status.SourceID == 0 || status.SourceID == InvalidObjectID || status.SourceID == sourceID))
+                    return (int)status.RemainingTime;
+            }
+
+            return 99;
+        }
+
+        /// <summary>
         /// Gets the cooldown data for an action.
         /// </summary>
         /// <param name="actionID">Action ID to check.</param>
