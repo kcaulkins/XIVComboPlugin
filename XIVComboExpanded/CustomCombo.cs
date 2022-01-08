@@ -112,7 +112,40 @@ namespace XIVComboExpandedPlugin.Combos
 
                 // Both, return soonest available
                 if (a1.Data.IsCooldown && a2.Data.IsCooldown)
-                    return a1.Data.CooldownRemaining < a2.Data.CooldownRemaining ? a1 : a2;
+                {
+                    if (a1.Data.HasCharges && a2.Data.HasCharges)
+                    {
+                        if (a1.Data.RemainingCharges == a2.Data.RemainingCharges)
+                        {
+                            return a1.Data.ChargeCooldownRemaining < a2.Data.ChargeCooldownRemaining
+                                ? a1 : a2;
+                        }
+
+                        return a1.Data.RemainingCharges > a2.Data.RemainingCharges
+                            ? a1 : a2;
+                    }
+                    else if (a1.Data.HasCharges)
+                    {
+                        if (a1.Data.RemainingCharges > 0)
+                            return a1;
+
+                        return a1.Data.ChargeCooldownRemaining < a2.Data.CooldownRemaining
+                            ? a1 : a2;
+                    }
+                    else if (a2.Data.HasCharges)
+                    {
+                        if (a2.Data.RemainingCharges > 0)
+                            return a2;
+
+                        return a2.Data.ChargeCooldownRemaining < a1.Data.CooldownRemaining
+                            ? a2 : a1;
+                    }
+                    else
+                    {
+                        return a1.Data.CooldownRemaining < a2.Data.CooldownRemaining
+                            ? a1 : a2;
+                    }
+                }
 
                 // One or the other
                 return a1.Data.IsCooldown ? a2 : a1;
@@ -195,6 +228,10 @@ namespace XIVComboExpandedPlugin.Combos
         protected static bool HasEffect(ushort effectID)
             => FindEffect(effectID) is not null;
 
+        
+        protected static int? EffectDuration(ushort effectID)
+            => GetEffectDuration(effectID);
+
         /// <summary>
         /// Finds an effect on the player.
         /// The effect must be owned by the player or unowned.
@@ -203,6 +240,9 @@ namespace XIVComboExpandedPlugin.Combos
         /// <returns>Status object or null.</returns>
         protected static Status? FindEffect(ushort effectID)
             => FindEffect(effectID, LocalPlayer, LocalPlayer?.ObjectId);
+
+        protected static int? GetEffectDuration(ushort effectID)
+            => GetStatusDuration(effectID, LocalPlayer, LocalPlayer?.ObjectId);
 
         /// <summary>
         /// Find if an effect on the target exists.
@@ -221,6 +261,9 @@ namespace XIVComboExpandedPlugin.Combos
         /// <returns>Status object or null.</returns>
         protected static Status? FindTargetEffect(ushort effectID)
             => FindEffect(effectID, CurrentTarget, LocalPlayer?.ObjectId);
+
+        protected static int? TargetEffectDuration(ushort effectID)
+            => GetStatusDuration(effectID, CurrentTarget, LocalPlayer?.ObjectId);
 
         /// <summary>
         /// Find if an effect on the player exists.
@@ -269,6 +312,16 @@ namespace XIVComboExpandedPlugin.Combos
             => Service.ComboCache.GetStatus(effectID, obj, sourceID);
 
         /// <summary>
+        /// Gets the duration of an active status.
+        /// </summary>
+        /// <param name="effectID">Status effect ID.</param>
+        /// <param name="obj">Object to look for effects on.</param>
+        /// <param name="sourceID">Source object ID.</param>
+        /// <returns>int.</returns>
+        protected static int? GetStatusDuration(ushort effectID, GameObject? obj, uint? sourceID)
+            => Service.ComboCache.GetStatusDuration(effectID, obj, sourceID);
+
+        /// <summary>
         /// Gets the cooldown data for an action.
         /// </summary>
         /// <param name="actionID">Action ID to check.</param>
@@ -293,11 +346,54 @@ namespace XIVComboExpandedPlugin.Combos
             => !GetCooldown(actionID).IsCooldown;
 
         /// <summary>
+        /// Get the maximum number of charges for an action at a given level.
+        /// </summary>
+        /// <param name="actionID">Action ID to check.</param>
+        /// <returns>Number of charges.</returns>
+        protected static ushort GetMaxCharges(uint actionID)
+            => GetCooldown(actionID).MaxCharges;
+
+        /// <summary>
         /// Get a job gauge.
         /// </summary>
         /// <typeparam name="T">Type of job gauge.</typeparam>
         /// <returns>The job gauge.</returns>
         protected static T GetJobGauge<T>() where T : JobGaugeBase
             => Service.ComboCache.GetJobGauge<T>();
+
+        /// <summary>
+        /// Gets the distance from the target.
+        /// </summary>
+        /// <returns>Double representing the distance from the target.</returns>
+        protected static double GetTargetDistance()
+        {
+            if (CurrentTarget is null)
+                return 0;
+
+            if (CurrentTarget is not BattleChara chara)
+                return 0;
+
+            double distanceX = chara.YalmDistanceX;
+            double distanceY = chara.YalmDistanceZ;
+
+            return Math.Sqrt(Math.Pow(distanceX, 2) + Math.Pow(distanceY, 2));
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether you are in melee range from the current target.
+        /// </summary>
+        /// <returns>Bool indicating whether you are in melee range.</returns>
+        protected static bool InMeleeRange()
+        {
+            var distance = GetTargetDistance();
+
+            if (distance == 0)
+                return true;
+
+            if (distance > 3)
+                return false;
+
+            return true;
+        }
     }
 }
