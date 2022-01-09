@@ -28,6 +28,8 @@ namespace XIVComboExpandedPlugin.Combos
             ApexArrow = 16496,
             Shadowbite = 16494,
             Ladonsbite = 25783,
+            RadiantFinale = 25785,
+            BattleVoice = 118,
             BlastArrow = 25784;
 
         public static class Buffs
@@ -65,6 +67,7 @@ namespace XIVComboExpandedPlugin.Combos
                 BurstShot = 76,
                 ApexArrow = 80,
                 Ladonsbite = 82,
+                RadiantFinale = 90,
                 BlastShot = 86;
         }
     }
@@ -271,13 +274,32 @@ namespace XIVComboExpandedPlugin.Combos
             if (actionID == BRD.Bloodletter)
             {
                 if (level >= BRD.Levels.Sidewinder)
-                    return CalcBestAction(actionID, BRD.Bloodletter, BRD.EmpyrealArrow, BRD.Sidewinder);
+                    return CalcBestAction(BRD.EmpyrealArrow, BRD.EmpyrealArrow, BRD.Bloodletter, BRD.Sidewinder);
 
                 if (level >= BRD.Levels.EmpyrealArrow)
-                    return CalcBestAction(actionID, BRD.Bloodletter, BRD.EmpyrealArrow);
+                    return CalcBestAction(BRD.EmpyrealArrow, BRD.EmpyrealArrow, BRD.Bloodletter);
 
                 if (level >= BRD.Levels.Bloodletter)
                     return BRD.Bloodletter;
+            }
+
+            return actionID;
+        }
+    }
+
+    internal class BardRadiantFeature : CustomCombo
+    {
+        protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BardRadiantFeature;
+
+        protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
+        {
+            if (actionID == BRD.RadiantFinale)
+            {
+                if (level <= BRD.Levels.RadiantFinale)
+                    return BRD.BattleVoice;
+
+                if (level >= BRD.Levels.RadiantFinale)
+                    return CalcBestAction(actionID, BRD.BattleVoice);
             }
 
             return actionID;

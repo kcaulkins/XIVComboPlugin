@@ -161,6 +161,10 @@ namespace XIVComboExpandedPlugin
         [CustomComboInfo("Rain of Death Feature", "Replaces Rain of Death with Empyreal Arrow and Sidewinder depending on which is available.", BRD.JobID)]
         BardRainOfDeathFeature = 2307,
 
+        [SecretCustomCombo]
+        [CustomComboInfo("Radiant Finale Feature", "Replaces Battle Orders with Radiant Finale depending on which is available.", BRD.JobID)]
+        BardRadiantFeature = 2308,
+
         #endregion
         // ====================================================================================
         #region DANCER
