@@ -30,6 +30,8 @@ namespace XIVComboExpandedPlugin.Combos
             Ladonsbite = 25783,
             RadiantFinale = 25785,
             BattleVoice = 118,
+            MagesBallad = 114,
+            Army = 116,
             BlastArrow = 25784;
 
         public static class Buffs
@@ -82,8 +84,21 @@ namespace XIVComboExpandedPlugin.Combos
             {
                 var gauge = GetJobGauge<BRDGauge>();
 
-                if (level >= BRD.Levels.PitchPerfect && gauge.Song == Song.WANDERER)
+                if (level >= BRD.Levels.PitchPerfect && gauge.Song == Song.WANDERER && gauge.Repertoire >= 1)
                     return BRD.PitchPerfect;
+
+                // Choose song
+                if (gauge.Song == Song.WANDERER && gauge.SongTimer <= 2)
+                    return CalcBestAction(BRD.MagesBallad, BRD.MagesBallad, BRD.Army);
+
+                if (gauge.Song == Song.MAGE && gauge.SongTimer <= 11)
+                    return CalcBestAction(BRD.WanderersMinuet, BRD.WanderersMinuet, BRD.Army);
+
+                if (gauge.Song == Song.ARMY && gauge.SongTimer <= 2)
+                    return CalcBestAction(BRD.WanderersMinuet, BRD.WanderersMinuet, BRD.MagesBallad);
+
+                if(gauge.SongTimer <= 11)
+                    return CalcBestAction(BRD.WanderersMinuet, BRD.WanderersMinuet, BRD.MagesBallad);
             }
 
             return actionID;
@@ -295,11 +310,10 @@ namespace XIVComboExpandedPlugin.Combos
         {
             if (actionID == BRD.RadiantFinale)
             {
-                if (level <= BRD.Levels.RadiantFinale)
+                if (level < BRD.Levels.RadiantFinale)
                     return BRD.BattleVoice;
 
-                if (level >= BRD.Levels.RadiantFinale)
-                    return CalcBestAction(actionID, BRD.BattleVoice);
+                return CalcBestAction(actionID, BRD.BattleVoice, BRD.RadiantFinale);
             }
 
             return actionID;
