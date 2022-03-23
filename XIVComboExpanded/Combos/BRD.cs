@@ -12,6 +12,7 @@ namespace XIVComboExpandedPlugin.Combos
             HeavyShot = 97,
             StraightShot = 98,
             VenomousBite = 100,
+            RagingStrikes = 101,
             QuickNock = 106,
             Bloodletter = 110,
             Windbite = 113,
@@ -39,6 +40,8 @@ namespace XIVComboExpandedPlugin.Combos
             public const ushort
                 StraightShotReady = 122,
                 BlastShotReady = 2692,
+                RagingStrikes = 125,
+                Barrage = 128,
                 ShadowbiteReady = 3002;
         }
 
@@ -105,6 +108,13 @@ namespace XIVComboExpandedPlugin.Combos
         }
     }
 
+
+    // BUTTON 1
+    // BUTTON 1
+    // BUTTON 1
+    // BUTTON 1
+    // BUTTON 1
+    // BUTTON 1
     internal class BardStraightShotUpgradeFeature : CustomCombo
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BrdAny;
@@ -113,9 +123,9 @@ namespace XIVComboExpandedPlugin.Combos
         {
             if (actionID == BRD.HeavyShot || actionID == BRD.BurstShot)
             {
-
-
-
+                if (level >= BRD.Levels.StraightShot && HasEffect(BRD.Buffs.Barrage))
+                    // Refulgent Arrow
+                    return OriginalHook(BRD.StraightShot);
 
 
 
@@ -140,6 +150,9 @@ namespace XIVComboExpandedPlugin.Combos
                     var windbite = TargetHasEffect(BRD.Debuffs.Windbite);
 
                     if ((venomous && windbite) && (TargetEffectDuration(BRD.Debuffs.Windbite) < 4 || TargetEffectDuration(BRD.Debuffs.VenomousBite) < 4))
+                        return BRD.IronJaws;
+
+                    if (HasEffect(BRD.Buffs.RagingStrikes) && GetCooldown(BRD.RagingStrikes).CooldownRemaining <= 103)
                         return BRD.IronJaws;
 
                     if (windbite && !venomous)
@@ -173,7 +186,10 @@ namespace XIVComboExpandedPlugin.Combos
                 {
                     var gauge = GetJobGauge<BRDGauge>();
 
-                    if (level >= BRD.Levels.ApexArrow && gauge.SoulVoice == 100)
+                    if (level >= BRD.Levels.ApexArrow && gauge.SoulVoice == 100 && GetCooldown(BRD.RagingStrikes).CooldownRemaining >= 45)
+                        return BRD.ApexArrow;
+
+                    if (level >= BRD.Levels.ApexArrow && gauge.SoulVoice >= 80 && HasEffect(BRD.Buffs.RagingStrikes) && GetCooldown(BRD.RagingStrikes).CooldownRemaining >= 116)
                         return BRD.ApexArrow;
 
                     if (level >= BRD.Levels.BlastShot && HasEffect(BRD.Buffs.BlastShotReady))
@@ -280,6 +296,12 @@ namespace XIVComboExpandedPlugin.Combos
         }
     }
 
+
+    // BUTTON 2 BUTTON 2 BUTTON 2
+    // BUTTON 2 BUTTON 2 BUTTON 2
+    // BUTTON 2 BUTTON 2 BUTTON 2
+    // BUTTON 2 BUTTON 2 BUTTON 2
+    // BUTTON 2 BUTTON 2 BUTTON 2
     internal class BardBloodletterFeature : CustomCombo
     {
         protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BardBloodletterFeature;
@@ -288,6 +310,9 @@ namespace XIVComboExpandedPlugin.Combos
         {
             if (actionID == BRD.Bloodletter)
             {
+                if (level >= BRD.Levels.Sidewinder && HasEffect(BRD.Buffs.RagingStrikes) && GetCooldown(BRD.RagingStrikes).CooldownRemaining >= 117)
+                    return CalcBestAction(BRD.EmpyrealArrow, BRD.EmpyrealArrow, BRD.Bloodletter);
+
                 if (level >= BRD.Levels.Sidewinder)
                     return CalcBestAction(BRD.EmpyrealArrow, BRD.EmpyrealArrow, BRD.Bloodletter, BRD.Sidewinder);
 
