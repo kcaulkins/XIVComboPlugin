@@ -1,4 +1,4 @@
-# XIVComboPlugin
+# XIVCombo Expanded
 
 [![Build](https://github.com/MKhayle/XIVComboPlugin/actions/workflows/build.yml/badge.svg)](https://github.com/daemitus/XIVComboPlugin/actions/workflows/build.yml)
 
